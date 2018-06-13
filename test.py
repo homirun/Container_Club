@@ -8,7 +8,7 @@ def main(stdscr):
 
     for i in range(30):
         stdscr.addstr(str(i))
-        stdscr.addstr(i, i, "hoge",curses.A_REVERSE)
+        stdscr.addstr(i, i, "hoge",curses.A_REVERSE)  # y, x, str, options
         stdscr.refresh()
         # スリープ挟まんと死ぬ
         sleep(0.1)
