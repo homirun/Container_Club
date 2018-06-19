@@ -21,4 +21,45 @@ int main()
   char a;
   cin >> a;
 
+
+  while(true)
+  {
+    cbreak();
+
+    if (a == 'a')
+    {
+      x--;
+      waku();
+      move(x, y);
+      cout << "@";
+    }
+
+    if (a == 's')
+    {
+      y--;
+      waku();
+      move(x, y);
+      cout << "@";
+    }
+
+    if (a == 'd')
+    {
+      x++;
+      waku();
+      move(x, y);
+      cout << "@";
+    }
+
+    if (a == 'w')
+    {
+      y++;
+      waku();
+      move(x, y);
+      cout << "@";
+    }
+
+    cin >> a;
+
+  }
+
 }
