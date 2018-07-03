@@ -5,9 +5,10 @@ using namespace std;
 
 int px = 0;
 int py = 0;
-int ch;
 int level = 800;
+int isHead = 1;
 
+int ch;
 
 /* prototype */
 void run(void);
@@ -31,22 +32,38 @@ int main(void){
 
 void run(void){
   clear();
-  mvprintw(py++, px++,"$");
-  //ch = getch();
+  timeout(0);
+  ch = getch();
+  switch(ch){
+    case 'h':
+      isHead = 3;
+      break;
+    case 'j':
+      isHead = 2;
+      break;
+    case 'k':
+      isHead = 0;
+      break;
+    case 'l':
+      isHead = 1;
+      break;
+  }
+
+  switch(isHead){
+  case 0:
+    mvprintw(py--, px, "*");
+    break;
+  case 1:
+    mvprintw(py, px++, "*");
+    break;
+  case 2:
+    mvprintw(py++, px, "*");
+    break;
+  case 3:
+    mvprintw(py, px--, "*");
+    break;
+  }
+
   napms(level);
 
-  // switch(ch){
-  //   case 'h':
-  //     mvprintw(py, px--, "*");
-  //     break;
-  //   case 'j':
-  //     mvprintw(py++, px, "*");
-  //     break;
-  //   case 'k':
-  //     mvprintw(py--, px, "*");
-  //     break;
-  //   case 'l':
-  //     mvprintw(py, px++, "*");
-  //     break;
-  // }
 }
