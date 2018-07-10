@@ -23,7 +23,6 @@ int main(void){
   init_pair(1, COLOR_BLUE, COLOR_BLUE);
   bkgd(COLOR_PAIR(1));
   while(1){
-    erase();
     run();
     refresh();
   }
@@ -31,8 +30,18 @@ int main(void){
   return 0;
 }
 
+void move(double x, double y){
+  mvaddch(py, px, ' ');
+
+  px = x;
+  py = y;
+
+  mvaddch(py, px, 'D');
+}
+
 void run(void){
-  //timeout(0);
+  clear();
+  timeout(0);
   ch = getch();
   switch(ch){
     case 'h':
@@ -51,20 +60,21 @@ void run(void){
 
   switch(isHead){
   case 0:
-    mvprintw(py--, px, "*");
+    move(px, py--);
     break;
   case 1:
-    mvprintw(py, px++, "*");
+    move(px++, py);
     break;
   case 2:
-    mvprintw(py++, px, "*");
+    move(px, py++);
     break;
   case 3:
-    mvprintw(py, px--, "*");
+    move(px--, py);
     break;
   }
 
   //mvprintw(py--, px, "*");
   napms(level);
+
 
 }
