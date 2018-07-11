@@ -45,33 +45,23 @@ class MyCursor
   // 移動
   void move2(int udlr) 
   {
-    double x;
-    double y;
     
     // while(true)
     for(int i=0;i<20;i++)
     {
     
-      // 移動方向
-      x = myX;
-      y = myY;
+      // 文字の移動(old)
+      mvaddch(myY, myX, ' ');
 
       // キー分岐
       switch(udlr)
       {
-        case UP:     y--;      break;
-        case DOWN:   y++;      break;
-        case LEFT:   x--;      break;
-        case RIGHT:  x++;      break;
+        case UP:     myY--;      break;
+        case DOWN:   myY++;      break;
+        case LEFT:   myX--;      break;
+        case RIGHT:  myX++;      break;
         default:     continue; break;
       } 
-      
-      // 文字の移動(old)
-      mvaddch(myY, myX, ' ');
-
-      // 座標系の更新
-      myX = x;
-      myY = y;
 
       // 文字の移動(new)
       mvaddch(myY, myX, myobject);
