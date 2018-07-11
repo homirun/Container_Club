@@ -86,23 +86,20 @@ class MyCursor
   }
 
   // キー入力の分岐
-  void mycursor(char num_move)
+  bool mycursor(char num_move)
   {
     if (num_move == 'h')
-      // this -> move(myX - 1, myY);
       this -> move2(LEFT);
     else if (num_move == 'j')
-      // this -> move(myX, myY + 1);
       this -> move2(DOWN);
     else if (num_move == 'k')
-      // this -> move(myX, myY - 1);
       this -> move2(UP);
     else if (num_move == 'l')
-      // this -> move(myX + 1, myY);
       this -> move2(RIGHT);
     else
-      // this -> move2(BEFORE_ANGLE);
-      return;
+      return false;
+    
+    return true;
   }
 
   // 衝突判定
@@ -164,12 +161,17 @@ int main()
 
     // キー入力なし or 入力キーが同一
     if(new_key == ERR || new_key == old_key) {
+
       obj.mycursor(old_key);
 
     // それ以外
     }else{
-      obj.mycursor(new_key);
-      old_key = new_key;
+
+      // 有効なキーが押された場合
+      if(obj.mycursor(new_key)){ 
+        old_key = new_key;
+      }
+
     }
 
     // 衝突時の動作
