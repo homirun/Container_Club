@@ -46,30 +46,22 @@ class MyCursor
   void move2(int udlr) 
   {
     
-    // while(true)
-    for(int i=0;i<20;i++)
+    // 文字の移動(old)
+    mvaddch(myY, myX, ' ');
+
+    // キー分岐
+    switch(udlr)
     {
-    
-      // 文字の移動(old)
-      mvaddch(myY, myX, ' ');
+      case UP:     myY--;      break;
+      case DOWN:   myY++;      break;
+      case LEFT:   myX--;      break;
+      case RIGHT:  myX++;      break;
+      // default:     continue; break;
+    } 
 
-      // キー分岐
-      switch(udlr)
-      {
-        case UP:     myY--;      break;
-        case DOWN:   myY++;      break;
-        case LEFT:   myX--;      break;
-        case RIGHT:  myX++;      break;
-        default:     continue; break;
-      } 
+    // 文字の移動(new)
+    mvaddch(myY, myX, myobject);
 
-      // 文字の移動(new)
-      mvaddch(myY, myX, myobject);
-
-      // 更新
-      usleep(100000);
-      refresh();
-    }
   }
 
   // キー入力の分岐
@@ -137,29 +129,38 @@ int main()
   // インスタンスの作成
   MyCursor obj(0, 0);
   AppleCursor ap;
-
-  move(100, 100); // 移動
  
   ap.pop_apple(); // 林檎の出現
 
+  char old_key = ERR; // 前の入力キー
+  char new_key = 'j'; // 次の入力キー
+
   while (true)
   {
-    // カーソル分岐
-    char key_down = getch();
 
-    // 有効な移動
-    obj.mycursor(key_down);
+    new_key = getch(); // キー入力
+    // obj.myobject = new_key; // Debug :: 入力キーをカーソルに
+    
+    // キー入力なし or 入力キーが同一
+    if(new_key == ERR || new_key == old_key) {
+      obj.mycursor(old_key);
 
-    /* 衝突時の動作
+    // それ以外
+    }else{
+      obj.mycursor(new_key);
+      old_key = new_key;
+    }
+
+    // 衝突時の動作
     if (obj.isTouching(ap))
     {
       ap.pop_apple();
       obj.move(obj.myX, obj.myY);
-    }*/
+    }
     
     usleep(10000); // 遅延
+    refresh(); // 更新
 
-    refresh();
   }
 
   endwin();
