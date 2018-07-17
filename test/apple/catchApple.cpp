@@ -25,7 +25,6 @@ class MyCursor
 
   MyCursor(double x, double y) : myX(x), myY(y)
   {
-    
   }
 
   // 移動
@@ -42,10 +41,20 @@ class MyCursor
     mvaddch(myY, myX, myobject);
   }
 
-  // 移動
-  void move2(int udlr) 
+  // 壁の衝突判定
+  bool checkTouchWall()
   {
-    
+    if (terx <= myX || myX < 0)
+      return true;
+    if (tery <= myY || myY < 0)
+      return true;
+    return false;
+  }
+
+  // 移動
+  void move2(int udlr)
+  {
+
     // 文字の移動(old)
     mvaddch(myY, myX, ' ');
 
@@ -57,7 +66,19 @@ class MyCursor
       case LEFT:   myX--;      break;
       case RIGHT:  myX++;      break;
       // default:     continue; break;
-    } 
+    }
+
+    // 壁に衝突した場合
+    if (checkTouchWall())
+    {
+      switch(udlr)
+      {
+        case UP:     myY++;      break;
+        case DOWN:   myY--;      break;
+        case LEFT:   myX++;      break;
+        case RIGHT:  myX--;      break;
+      }
+    }
 
     // 文字の移動(new)
     mvaddch(myY, myX, myobject);
@@ -89,7 +110,7 @@ class MyCursor
   {
     return (myX == obj.myX && myY == obj.myY);
   }
-    
+
 };
 
 class AppleCursor: public MyCursor
@@ -129,7 +150,7 @@ int main()
   // インスタンスの作成
   MyCursor obj(0, 0);
   AppleCursor ap;
- 
+
   ap.pop_apple(); // 林檎の出現
 
   char old_key = ERR; // 前の入力キー
@@ -140,7 +161,7 @@ int main()
 
     new_key = getch(); // キー入力
     // obj.myobject = new_key; // Debug :: 入力キーをカーソルに
-    
+
     // キー入力なし or 入力キーが同一
     if(new_key == ERR || new_key == old_key) {
       obj.mycursor(old_key);
@@ -157,7 +178,7 @@ int main()
       ap.pop_apple();
       obj.move(obj.myX, obj.myY);
     }
-    
+
     usleep(10000); // 遅延
     refresh(); // 更新
 
@@ -165,55 +186,3 @@ int main()
 
   endwin();
 }
-
-
-// random
-// random_device rnd;
-// mt19937 mt(rnd());
-// uniform_int_distribution<> rand100(0, 99);
-// cout << rand100(mt) << endl;
-
-
-
-
-
-// void mvcursor(char num_move, WINDOW *win)
-// {
-//   int x, y;
-//   getyx(win, y, x);
-// 
-//   if (num_move == 'h' && x != 0)
-//   {
-//     addch(' ');
-//     mvaddch(y, x - 1, '@');
-//     move(y, x - 1);
-//   }
-//   else if (num_move == 'j')
-//   {
-//     addch(' ');
-//     mvaddch(y + 1, x, '@');
-//     move(y + 1, x);
-//   }
-//   else if (num_move == 'k' && y != 0)
-//   {
-//     addch(' ');
-//     mvaddch(y - 1, x, '@');
-//     move(y - 1, x);
-//   }
-//   else if (num_move == 'l')
-//   {
-//     addch(' ');
-//     addch('@');
-//     move(y, x + 1);
-//   }
-// }
-
-// void addapple()
-// {
-//   int ax, ay;
-// 
-//   ax = 100;
-//   ay = 100;
-// 
-//   mvaddch(ay, ax, 'A');
-// }
