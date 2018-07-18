@@ -14,8 +14,9 @@ using namespace std;
 void mvcursor(char num_move, WINDOW *win);
 void addapple();
 
-int terx, tery;
+int terx, tery; // 現在のターミナルの幅と高さ
 
+/* *** ヘビの体の1パーツを扱うクラス *** */
 class MyCursor
 {
   public:
@@ -27,21 +28,19 @@ class MyCursor
   {
   }
 
-  // 移動
+  /* *** 移動 *** */
   void move(double x, double y)
   {
-    // 文字の移動(old)
-    mvaddch(myY, myX, ' ');
+    mvaddch(myY, myX, ' '); // 文字の移動(old)
 
-    // 座標系の更新
+    /* *** 座標系の更新 *** */
     myX = x;
     myY = y;
 
-    // 文字の移動(new)
-    mvaddch(myY, myX, myobject);
+    mvaddch(myY, myX, myobject); // 文字の移動(new)
   }
 
-  // 壁の衝突判定
+  /* *** 壁の衝突判定 *** */
   bool checkTouchWall()
   {
     if (terx <= myX || myX < 0)
@@ -51,14 +50,13 @@ class MyCursor
     return false;
   }
 
-  // 移動
+  /* *** 移動2 *** */
   void move2(int udlr)
   {
 
-    // 文字の移動(old)
-    mvaddch(myY, myX, ' ');
+    mvaddch(myY, myX, ' '); // 文字の移動(old)
 
-    // キー分岐
+    /* *** キー分岐 *** */
     switch(udlr)
     {
       case UP:     myY--;      break;
@@ -68,7 +66,7 @@ class MyCursor
       // default:     continue; break;
     }
 
-    // 壁に衝突した場合
+    /* *** 壁に衝突した場合 *** */
     if (checkTouchWall())
     {
       switch(udlr)
@@ -80,12 +78,11 @@ class MyCursor
       }
     }
 
-    // 文字の移動(new)
-    mvaddch(myY, myX, myobject);
+    mvaddch(myY, myX, myobject); // 文字の移動(new)
 
   }
 
-  // キー入力の分岐
+  /* **** キー入力の分岐 *** */
   bool mycursor(char num_move)
   {
     if (num_move == 'h')
@@ -102,7 +99,7 @@ class MyCursor
     return true;
   }
 
-  // 衝突判定
+  /* *** 衝突の判定 *** */
   bool isTouching(MyCursor &obj)
   {
     return (myX == obj.myX && myY == obj.myY);
@@ -110,6 +107,7 @@ class MyCursor
 
 };
 
+/* *** リンゴをあつかうクラス *** */
 class AppleCursor: public MyCursor
 {
   private:
@@ -122,7 +120,7 @@ class AppleCursor: public MyCursor
 
     void pop_apple()
     {
-      // 乱数の生成
+      /* *** 乱数の生成 *** */
       random_device rnd;
       mt19937 mt(rnd());
       uniform_int_distribution<> randX(0, terx - 1);
@@ -135,16 +133,16 @@ class AppleCursor: public MyCursor
 
 int main()
 {
-  /* ********** おまじない ********** */
+  /* *** おまじない *** */
   WINDOW *w = initscr(); // スクリーンの生成
   getmaxyx(w, tery, terx); // 最大の枠サイズ
   noecho(); // キー入力を出力せず
   cbreak(); // 1文字打ったら終わり!!
-  timeout(200); // nodelay()とほぼ同義. ERRを返すまでのタイムアウト時間.
+  timeout(100); // nodelay()とほぼ同義. ERRを返すまでのタイムアウト時間.
   // timeout(-1); // ブロッキングモード
   curs_set(0); // カーソルの見え方 : 透過
 
-  // インスタンスの作成
+  /* *** インスタンスの作成 *** */
   MyCursor obj(0, 0);
   AppleCursor ap;
 
@@ -152,6 +150,7 @@ int main()
 
   char old_key = ERR; // 前の入力キー
   char new_key = 'j'; // 次の入力キー
+  int  have_apple = 0; // リンゴの獲得数
 
   while (true)
   {
@@ -159,26 +158,36 @@ int main()
     new_key = getch(); // キー入力
     // obj.myobject = new_key; // Debug :: 入力キーをカーソルに
 
-    // キー入力なし or 入力キーが同一
+    /* *** キー入力なし or 入力キーが同一 *** */
     if(new_key == ERR || new_key == old_key) {
 
       obj.mycursor(old_key);
 
-    // それ以外
+    /* *** それ以外 *** */
     }else{
 
-      // 有効なキーが押された場合
-      if(obj.mycursor(new_key)){ 
+      /* *** 有効なキーが押された場合 *** */
+      if(obj.mycursor(new_key))
+      { 
         old_key = new_key;
       }
 
     }
 
-    // 衝突時の動作
+    /* *** 衝突時の動作 *** */
     if (obj.isTouching(ap))
     {
-      ap.pop_apple();
+      have_apple++; // 獲得したリンゴの数+1
+      ap.pop_apple(); // 新しいリンゴ
       obj.move(obj.myX, obj.myY);
+
+      /* *** 得点の表示 *** */
+      const int point_status_x = 0; // 描画位置x
+      const int point_status_y = tery-1; // 描画位置y
+      std::string tmp           = "POINT: " + std::to_string(have_apple); // String定義
+      char        *point_status = new char[tmp.length()+1]; // Char配列の定義
+      strcpy(point_status, tmp.c_str()); // String -> Char
+      mvaddstr(point_status_y, point_status_x, point_status); // 描画
     }
 
     usleep(10000); // 遅延
