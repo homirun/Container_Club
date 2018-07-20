@@ -116,6 +116,7 @@ class AppleCursor: public MyCursor
     AppleCursor(): MyCursor(0, 0)
     {
       myobject = 'A';
+      pop_apple();
     }
 
     void pop_apple()
@@ -143,10 +144,11 @@ int main()
   curs_set(0); // カーソルの見え方 : 透過
 
   /* *** インスタンスの作成 *** */
-  MyCursor obj(0, 0);
+  MyCursor snake_head(0, 0);
   AppleCursor ap;
 
-  ap.pop_apple(); // 林檎の出現
+  // ap.pop_apple(); // 林檎の出現
+  snake_head.move(0,0); // カーソルの出現
 
   char old_key = ERR; // 前の入力キー
   char new_key = 'j'; // 次の入力キー
@@ -156,34 +158,37 @@ int main()
   {
 
     new_key = getch(); // キー入力
-    // obj.myobject = new_key; // Debug :: 入力キーをカーソルに
+    // snake_head.myobject = new_key; // Debug :: 入力キーをカーソルに
 
     /* *** キー入力なし or 入力キーが同一 *** */
     if(new_key == ERR || new_key == old_key) {
 
-      obj.mycursor(old_key);
+      snake_head.mycursor(old_key);
 
     /* *** それ以外 *** */
     }else{
 
       /* *** 有効なキーが押された場合 *** */
-      if(obj.mycursor(new_key))
+      if(snake_head.mycursor(new_key))
       { 
         old_key = new_key;
       }
 
     }
 
-    /* *** 衝突時の動作 *** */
-    if (obj.isTouching(ap))
+    /* *** リンゴを獲得した時 *** */
+    if (snake_head.isTouching(ap))
     {
       have_apple++; // 獲得したリンゴの数+1
       ap.pop_apple(); // 新しいリンゴ
-      obj.move(obj.myX, obj.myY);
+      snake_head.move(snake_head.myX, snake_head.myY);
 
+      // 新しくヘビの胴体をつける
+      MyCursor snake_body(10, 10);
+      
       /* *** 得点の表示 *** */
-      const int point_status_x = 0; // 描画位置x
-      const int point_status_y = tery-1; // 描画位置y
+      const int point_status_x  = 0; // 描画位置x
+      const int point_status_y  = tery-1; // 描画位置y
       std::string tmp           = "POINT: " + std::to_string(have_apple); // String定義
       char        *point_status = new char[tmp.length()+1]; // Char配列の定義
       strcpy(point_status, tmp.c_str()); // String -> Char
