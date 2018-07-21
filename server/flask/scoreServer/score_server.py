@@ -39,9 +39,9 @@ def validate(score):
     return True
 
 
-@app.route('/')
+@app.route('/api')
 def index():
-    return "index"
+    return render_template("doc.html")
 
 
 @app.route('/api/score')
