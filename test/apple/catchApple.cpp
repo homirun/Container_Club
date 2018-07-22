@@ -1,3 +1,4 @@
+#include <iostream>
 #include <random>
 #include <cstring>
 #include <ncurses.h>
@@ -17,6 +18,7 @@ void mvcursor(char num_move, WINDOW *win);
 void addapple();
 
 int terx, tery; // 現在のターミナルの幅と高さ
+int have_apple;
 
 class Body
 {
@@ -50,6 +52,15 @@ class Body
 
     pX = x; pY = y;
 
+  }
+
+  bool isTouch(double x, double y)
+  {
+    bool touch = (x == pX && y == pY);
+
+    if (body != nullptr)
+      return touch || body -> isTouch(x, y);
+    return touch;
   }
 };
 
@@ -88,6 +99,11 @@ class MyCursor
     return false;
   }
 
+  bool checkTouchBody()
+  {
+    return body != nullptr && body -> isTouch(myX, myY);
+  }
+
   /* *** 移動2 *** */
   void move2(int udlr)
   {
@@ -106,16 +122,36 @@ class MyCursor
     }
 
   
-    if (checkTouchWall())
+    
+    if (checkTouchWall() || checkTouchBody())
     {
-      switch(udlr)
-      {
-        case UP:     myY++;      break;
-        case DOWN:   myY--;      break;
-        case LEFT:   myX++;      break;
-        case RIGHT:  myX--;      break;
-      }
+      timeout(-1);
+
+      clear();
+      
+      double x = terx / 2 - 30;
+      double y = tery / 2 - 5;
+
+      move(x, y);
+      printw("   mmm                                                         ");
+      move(x, y + 1);
+      printw(" m\"   \"  mmm   mmmmm   mmm           mmm   m   m   mmm    m mm ");
+      move(x, y + 2);
+      printw(" #   mm \"   #  # # #  #\"  #         #\" \"#  \"m m\"  #\"  #   #\"  \"");
+      move(x, y + 3);
+      printw(" #    # m\"\"\"#  # # #  #\"\"\"\"         #   #   #m#   #\"\"\"\"   #    ");
+      move(x, y + 4);
+      printw("  \"mmm\" \"mm\"#  # # #  \"#mm\"         \"#m#\"    #    \"#mm\"   #    ");
+      move(x + 1, y + 5);
+
+      printw("POINT: %d", have_apple);
+
+      getch();
+      exit(0);
+
     }
+
+
 
     mvaddch(myY, myX, myobject); // 文字の移動(new)
 
@@ -206,11 +242,10 @@ int main()
 
   char old_key = ERR; // 前の入力キー
   char new_key = 'j'; // 次の入力キー
-  int  have_apple = 0; // リンゴの獲得数
+  have_apple = 0; // リンゴの獲得数
 
   while (true)
   {
-
     new_key = getch(); // キー入力
     // obj.myobject = new_key; // Debug :: 入力キーをカーソルに
 
