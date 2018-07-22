@@ -6,7 +6,9 @@
 int main(void){
     ApiAccess api;
     //api.postScore("chino", 300);
-    string result = api.getScore();
-    cout << "score: " << result << endl;
+    map<string, int> result = api.getScore();
+    for(auto mp : result) {
+        cout << mp.first << " " << mp.second << endl;
+    }
     return 0;
 }
