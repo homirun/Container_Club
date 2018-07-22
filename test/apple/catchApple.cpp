@@ -1,9 +1,8 @@
 #include <random>
 #include <ncurses.h>
+#include <list>
+#include "unistd.h" // sleepで使う
 using namespace std;
-
-// sleepで使う
-#include "unistd.h"
 
 // move2() の方向
 #define UP      1
@@ -23,6 +22,10 @@ class MyCursor
     double myX; // x座標
     double myY; // y座標
     char myobject = '@'; // 出力する文字
+
+  MyCursor()
+  {
+  }
 
   MyCursor(double x, double y) : myX(x), myY(y)
   {
@@ -63,7 +66,6 @@ class MyCursor
       case DOWN:   myY++;      break;
       case LEFT:   myX--;      break;
       case RIGHT:  myX++;      break;
-      // default:     continue; break;
     }
 
     /* *** 壁に衝突した場合 *** */
@@ -107,6 +109,15 @@ class MyCursor
 
 };
 
+/* *** ヘビのパーツを管理するクラス *** */
+class CursorManage
+{
+  public: 
+    static std::list<MyCursor> cursors; // MyCursorを保持しておくリスト
+};
+
+std::list<MyCursor> CursorManage::cursors;
+
 /* *** リンゴをあつかうクラス *** */
 class AppleCursor: public MyCursor
 {
@@ -129,7 +140,7 @@ class AppleCursor: public MyCursor
 
       this -> move(randX(mt), randY(mt));
     }
-
+    
 };
 
 int main()
@@ -153,6 +164,11 @@ int main()
   char old_key = ERR; // 前の入力キー
   char new_key = 'j'; // 次の入力キー
   int  have_apple = 0; // リンゴの獲得数
+  
+
+  //cursors[0](20, 30);
+  CursorManage::cursors.push_back(snake_head);
+
 
   while (true)
   {
