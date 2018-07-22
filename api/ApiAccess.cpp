@@ -2,8 +2,8 @@
 #include <curl/curl.h>
 #include <string>
 #include <map>
+#include <vector>
 #include "json11/json11.hpp"
-
 
 using namespace std;
 using namespace json11;
@@ -33,7 +33,7 @@ public:
         return 0;
     }
 
-    map<string, int> getScore(){
+    vector<pair<string, int>> getScore(){
         string chunk;
         CURL *curl;
         CURLcode res;
@@ -47,7 +47,7 @@ public:
         // ここでリクエストを投げる
         res = curl_easy_perform(curl);
         curl_easy_cleanup(curl);
-        return parseJson(chunk);;
+        return parseJson(chunk);
     }
 
     /**
@@ -64,14 +64,16 @@ public:
     }
 
     // JsonParse
-    map<string, int> parseJson(string jsonObj){
+    vector<pair<string, int>> parseJson(string jsonObj){
         string err;
-        map<string, int> mp;
+        vector<pair<string, int>> vc(10);
+        int counter = 0;
         Json json = Json::parse(jsonObj, err);
         for(auto &obj : json.array_items()){
-            mp[obj["usrname"].string_value()] = obj["score"].int_value();
+            vc[counter] = make_pair(obj["usrname"].string_value(), obj["score"].int_value());
+            counter++;
         }
-        return mp;
+        return vc;
     }
 
 
