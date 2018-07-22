@@ -132,6 +132,9 @@ class MyCursor
       double x = terx / 2 - 30;
       double y = tery / 2 - 5;
 
+
+      // GameOverの文字表示
+      // --------------------------------------------------------------
       move(x, y);
       printw("   mmm                                                         ");
       move(x, y + 1);
@@ -143,7 +146,9 @@ class MyCursor
       move(x, y + 4);
       printw("  \"mmm\" \"mm\"#  # # #  \"#mm\"         \"#m#\"    #    \"#mm\"   #    ");
       move(x + 1, y + 5);
+      // --------------------------------------------------------------
 
+      // POINT: 食べたりんごの数
       printw("POINT: %d", have_apple);
 
       getch();
