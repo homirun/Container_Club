@@ -156,19 +156,15 @@ int main()
 
   /* *** インスタンスの作成 *** */
   MyCursor snake_head(0, 0);
-  AppleCursor ap;
-
-  // ap.pop_apple(); // 林檎の出現
+  CursorManage::cursors.push_back(snake_head); // CursorManageのリストへ追加
   snake_head.move(0,0); // カーソルの出現
+
+  AppleCursor ap;
+  // ap.pop_apple(); // 林檎の出現
 
   char old_key = ERR; // 前の入力キー
   char new_key = 'j'; // 次の入力キー
   int  have_apple = 0; // リンゴの獲得数
-  
-
-  //cursors[0](20, 30);
-  CursorManage::cursors.push_back(snake_head);
-
 
   while (true)
   {
