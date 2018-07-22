@@ -1,5 +1,7 @@
 #include <random>
+#include <cstring>
 #include <ncurses.h>
+#include <memory>
 using namespace std;
 
 // sleepで使う
@@ -16,6 +18,42 @@ void addapple();
 
 int terx, tery; // 現在のターミナルの幅と高さ
 
+class Body
+{
+  public:
+    double pX, pY;
+    shared_ptr<Body> body = nullptr;
+
+  Body(double x, double y) : pX(x), pY(y)
+  {
+  }
+
+  void addBody()
+  {
+    if (body == nullptr)
+    {
+      body = shared_ptr <Body> (new Body(pX, pY));
+    }
+    else 
+    {
+      body -> addBody();
+    }
+  }
+
+  void bodyMove(double x, double y)
+  {
+    mvaddch(pY, pX, ' '); // 文字の移動(old)
+    mvaddch(y, x, 'o'); // 文字の移動(new)
+
+    if (body != nullptr)
+      this -> body -> bodyMove(pX, pY);
+
+    pX = x; pY = y;
+
+  }
+};
+
+
 /* *** ヘビの体の1パーツを扱うクラス *** */
 class MyCursor
 {
@@ -23,7 +61,7 @@ class MyCursor
     double myX; // x座標
     double myY; // y座標
     char myobject = '@'; // 出力する文字
-
+    shared_ptr<Body> body = nullptr;
   MyCursor(double x, double y) : myX(x), myY(y)
   {
   }
@@ -53,6 +91,7 @@ class MyCursor
   /* *** 移動2 *** */
   void move2(int udlr)
   {
+    double pX = myX, pY = myY;
 
     mvaddch(myY, myX, ' '); // 文字の移動(old)
 
@@ -63,10 +102,10 @@ class MyCursor
       case DOWN:   myY++;      break;
       case LEFT:   myX--;      break;
       case RIGHT:  myX++;      break;
-      // default:     continue; break;
+      // default:   
     }
 
-    /* *** 壁に衝突した場合 *** */
+  
     if (checkTouchWall())
     {
       switch(udlr)
@@ -79,6 +118,10 @@ class MyCursor
     }
 
     mvaddch(myY, myX, myobject); // 文字の移動(new)
+
+    if (body != nullptr)
+      this -> body -> bodyMove(pX, pY);
+
 
   }
 
@@ -105,7 +148,20 @@ class MyCursor
     return (myX == obj.myX && myY == obj.myY);
   }
 
+  void addBody()
+  {
+    if (body == nullptr)
+    {
+      body = shared_ptr <Body> (new Body(myX, myY));
+    }
+    else 
+    {
+      body -> addBody();
+    }
+  }
 };
+
+
 
 /* *** リンゴをあつかうクラス *** */
 class AppleCursor: public MyCursor
@@ -180,6 +236,8 @@ int main()
       have_apple++; // 獲得したリンゴの数+1
       ap.pop_apple(); // 新しいリンゴ
       obj.move(obj.myX, obj.myY);
+      obj.addBody();
+     
 
       /* *** 得点の表示 *** */
       const int point_status_x = 0; // 描画位置x
