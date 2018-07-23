@@ -128,9 +128,9 @@ class MyCursor
     
     if (checkTouchWall() || checkTouchBody())
     {
-      timeout(-1);
-
       clear();
+      
+      timeout(-1);
       
       double x = terx / 2 - 30;
       double y = tery / 2 - 5;
@@ -282,21 +282,84 @@ int main()
   /* *** おまじない *** */
   WINDOW *w = initscr(); // スクリーンの生成
   getmaxyx(w, tery, terx); // 最大の枠サイズ
+
+  // タイトル
+  // --------------------------------------------------------------
+  timeout(-1); // ブロッキングモード
+  curs_set(1); // カーソルの見え方 : 透過
+  echo();
+
+  // ユーザー名 
+  const int TEXT_LENGTH = 40;
+  char username[TEXT_LENGTH];
+
+  while(true){
+
+    const int RANKING_START_Y = tery / 2 - 5;
+    const int RANKING_START_X = terx / 2 - 40;
+    int loop_counter = 0;
+
+    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|-----------------------------------------------------------------------------|");
+    loop_counter++;
+    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|                                                                             |");
+    loop_counter++;
+    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|    #####                                   #####                            |");
+    loop_counter++;
+    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|   #     #  #    #    ##    #    #  ###### #     #    ##    #    #  ######   |");
+    loop_counter++;
+    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|   #        ##   #   #  #   #   #   #      #         #  #   ##  ##  #        |");
+    loop_counter++;
+    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|    #####   # #  #  #    #  ####    #####  #  ####  #    #  # ## #  #####    |");
+    loop_counter++;
+    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|         #  #  # #  ######  #  #    #      #     #  ######  #    #  #        |");
+    loop_counter++;
+    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|   #     #  #   ##  #    #  #   #   #      #     #  #    #  #    #  #        |");
+    loop_counter++;
+    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|    #####   #    #  #    #  #    #  ######  #####   #    #  #    #  ######   |");
+    loop_counter++;
+    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|                                                                             |");
+    loop_counter++;
+    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|-----------------------------------------------------------------------------|");
+    loop_counter+=2;
+    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "+ Please input the user-name and press the [Enter] ");
+    loop_counter+=2;
+    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "+ UserName: [                                         ]");
+
+    // 入力の受付
+    move(RANKING_START_Y+loop_counter, RANKING_START_X+13);
+    getnstr(username, TEXT_LENGTH);
+
+    // 入力値の検証
+    if(strlen(username) < 1){ 
+      continue;
+    }
+
+    // 出力 for Debug
+    // mvaddstr(0, 0, username);
+    clear();
+    refresh();
+    break;
+
+  }
+  // --------------------------------------------------------------
+
+
+  // ゲーム中
+  // --------------------------------------------------------------
   noecho(); // キー入力を出力せず
   cbreak(); // 1文字打ったら終わり!!
   timeout(100); // nodelay()とほぼ同義. ERRを返すまでのタイムアウト時間.
-  // timeout(-1); // ブロッキングモード
   curs_set(0); // カーソルの見え方 : 透過
 
+  char old_key = ERR; // 前の入力キー
+  char new_key = 'j'; // 次の入力キー
+  have_apple = 0; // リンゴの獲得数
+  
   /* *** インスタンスの作成 *** */
   MyCursor obj(0, 0);
   AppleCursor ap;
 
   ap.pop_apple(); // 林檎の出現
-
-  char old_key = ERR; // 前の入力キー
-  char new_key = 'j'; // 次の入力キー
-  have_apple = 0; // リンゴの獲得数
 
   while (true)
   {
