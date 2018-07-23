@@ -156,7 +156,7 @@ class MyCursor
       vector<pair<string, int>> result(10);
       result = api.getScore();
       const int RANKING_START_Y = y+7;
-      const int RANKING_START_X = x+1;
+      const int RANKING_START_X = (x+1)+15;
       int loop_counter = 0;
       int rank_counter = 1;
 
@@ -194,23 +194,24 @@ class MyCursor
 
       // 枠
       mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "--------------------------------");
+      loop_counter++;
       // --------------------------------------------------------------
       
       // POINT: 食べたりんごの数
+      move(RANKING_START_X, RANKING_START_Y+loop_counter);
       printw("POINT: %d", have_apple);
 
       getch();
+      clear();
+      refresh();
       exit(0);
 
     }
-
-
 
     mvaddch(myY, myX, myobject); // 文字の移動(new)
 
     if (body != nullptr)
       this -> body -> bodyMove(pX, pY);
-
 
   }
 
@@ -329,8 +330,8 @@ int main()
       /* *** 得点の表示 *** */
       const int point_status_x = 0; // 描画位置x
       const int point_status_y = tery-1; // 描画位置y
-      string tmp           = "POINT: " + to_string(have_apple); // String定義
-      char        *point_status = new char[tmp.length()+1]; // Char配列の定義
+      string tmp         = "POINT: " + to_string(have_apple); // String定義
+      char *point_status = new char[tmp.length()+1]; // Char配列の定義
       strcpy(point_status, tmp.c_str()); // String -> Char
       mvaddstr(point_status_y, point_status_x, point_status); // 描画
     }
