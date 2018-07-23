@@ -23,6 +23,10 @@ void addapple();
 int terx, tery; // 現在のターミナルの幅と高さ
 int have_apple; // 獲得したリンゴの数
 
+// ユーザー名 
+const int TEXT_LENGTH = 40;
+char user_name[TEXT_LENGTH];
+
 class Body
 {
   public:
@@ -150,7 +154,7 @@ class MyCursor
       move(x + 1, y + 5);
       // --------------------------------------------------------------
       
-      // ランキングの表示
+      // スコアの送信 & ランキングの表示(API系)
       // --------------------------------------------------------------
       ApiAccess api;
       vector<pair<string, int>> result(10);
@@ -159,7 +163,12 @@ class MyCursor
       const int RANKING_START_X = (x+1)+15;
       int loop_counter = 0;
       int rank_counter = 1;
+    
+      // スコアの送信
+      api.postScore(user_name, have_apple);
 
+      // ランキングの表示
+      
       // 枠
       mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "--------------------------------");
       loop_counter++;
@@ -289,10 +298,6 @@ int main()
   curs_set(1); // カーソルの見え方 : 透過
   echo();
 
-  // ユーザー名 
-  const int TEXT_LENGTH = 40;
-  char username[TEXT_LENGTH];
-
   while(true){
 
     const int RANKING_START_Y = tery / 2 - 5;
@@ -327,15 +332,16 @@ int main()
 
     // 入力の受付
     move(RANKING_START_Y+loop_counter, RANKING_START_X+13);
-    getnstr(username, TEXT_LENGTH);
+    getnstr(user_name, TEXT_LENGTH);
 
     // 入力値の検証
-    if(strlen(username) < 1){ 
+    if(strlen(user_name) < 1){ 
       continue;
     }
 
     // 出力 for Debug
-    // mvaddstr(0, 0, username);
+    // mvaddstr(0, 0, user_name);
+    
     clear();
     refresh();
     break;
