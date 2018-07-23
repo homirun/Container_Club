@@ -1,12 +1,15 @@
-#include <iostream>
-#include <random>
 #include <cstring>
-#include <ncurses.h>
+#include <iostream>
+#include <map>
 #include <memory>
+#include <ncurses.h>
+#include <random>
+#include <string>
+#include <vector>
 using namespace std;
 
-// sleepで使う
-#include "unistd.h"
+#include "ApiAccess.cpp"
+#include "unistd.h" // sleepで使う
 
 // move2() の方向
 #define UP      1
@@ -18,7 +21,7 @@ void mvcursor(char num_move, WINDOW *win);
 void addapple();
 
 int terx, tery; // 現在のターミナルの幅と高さ
-int have_apple;
+int have_apple; // 獲得したリンゴの数
 
 class Body
 {
@@ -282,7 +285,7 @@ int main()
       /* *** 得点の表示 *** */
       const int point_status_x = 0; // 描画位置x
       const int point_status_y = tery-1; // 描画位置y
-      std::string tmp           = "POINT: " + std::to_string(have_apple); // String定義
+      string tmp           = "POINT: " + to_string(have_apple); // String定義
       char        *point_status = new char[tmp.length()+1]; // Char配列の定義
       strcpy(point_status, tmp.c_str()); // String -> Char
       mvaddstr(point_status_y, point_status_x, point_status); // 描画
