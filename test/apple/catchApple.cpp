@@ -135,7 +135,6 @@ class MyCursor
       double x = terx / 2 - 30;
       double y = tery / 2 - 5;
 
-
       // GameOverの文字表示
       // --------------------------------------------------------------
       move(x, y);
@@ -150,7 +149,53 @@ class MyCursor
       printw("  \"mmm\" \"mm\"#  # # #  \"#mm\"         \"#m#\"    #    \"#mm\"   #    ");
       move(x + 1, y + 5);
       // --------------------------------------------------------------
+      
+      // ランキングの表示
+      // --------------------------------------------------------------
+      ApiAccess api;
+      vector<pair<string, int>> result(10);
+      result = api.getScore();
+      const int RANKING_START_Y = y+7;
+      const int RANKING_START_X = x+1;
+      int loop_counter = 0;
+      int rank_counter = 1;
 
+      // 枠
+      mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "--------------------------------");
+      loop_counter++;
+      mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "| rank  | name       | score   |");
+      loop_counter++;
+      mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "--------------------------------");
+      loop_counter++;
+
+      for(auto vc : result) {
+
+        /* *** 出力する文字列の組み立て *** */
+        const int RANK_WIDTH = 5;
+        string rank = api.smart_format(to_string(rank_counter), RANK_WIDTH); // 順位
+
+        const int NAME_WIDTH = 10;
+        string name = api.smart_format(vc.first, NAME_WIDTH); // 名前
+
+        const int SCORE_WIDTH = 7;
+        string score = api.smart_format(to_string(vc.second), SCORE_WIDTH); // スコア
+
+        string text = "| " + rank + " | " + name + " | " + score + " |";
+
+        // String -> char[]
+        char *record = new char[text.length()+1]; // Char配列の定義
+        strcpy(record, text.c_str()); // String -> Char
+
+        mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, record); // 描画
+
+        loop_counter++;
+        rank_counter++;
+      }
+
+      // 枠
+      mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "--------------------------------");
+      // --------------------------------------------------------------
+      
       // POINT: 食べたりんごの数
       printw("POINT: %d", have_apple);
 
@@ -281,7 +326,6 @@ int main()
       obj.move(obj.myX, obj.myY);
       obj.addBody();
      
-
       /* *** 得点の表示 *** */
       const int point_status_x = 0; // 描画位置x
       const int point_status_y = tery-1; // 描画位置y
