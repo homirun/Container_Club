@@ -1,26 +1,30 @@
 #include <iostream>
 #include <ncurses.h>
-using namespace std;
+#include <string>
+#include <map>
+#include <vector>
 #include "unistd.h" // sleepで使う
 #include "../ApiAccess.cpp"
+
+using namespace std;
 
 int terx, tery;
 
 // 空白を埋める(引数の数だけスペースを返す)
-std::string smart_format(std::string str, int column_width){
+string smart_format(string str, int column_width){
 
   int str_len = str.length();
   int need_spaces = column_width - str_len;
-  
+
   if(need_spaces < 0){
     return "\0";
   }
-  
-  std::string tmp;
+
+  string tmp;
   for(int i=0; i<need_spaces; i++){
     tmp += " ";
   }
-  
+
   return str + tmp;
 }
 
@@ -37,7 +41,8 @@ int main()
 
   /* *** 順位データの取得 *** */
   ApiAccess api;
-  map<string, int> result = api.getScore();
+  vector<pair<string, int>> result(10);
+  result = api.getScore();
 
   while(true){
 
@@ -56,19 +61,19 @@ int main()
     mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "--------------------------------");
     loop_counter++;
 
-    for(auto mp : result) {
-      
+    for(auto vc : result) {
+
       /* *** 出力する文字列の組み立て *** */
       const int RANK_WIDTH = 5;
-      std::string rank = smart_format(std::to_string(rank_counter), RANK_WIDTH); // 順位
+      string rank = smart_format(to_string(rank_counter), RANK_WIDTH); // 順位
 
       const int NAME_WIDTH = 10;
-      std::string name = smart_format(mp.first, NAME_WIDTH); // 名前
+      string name = smart_format(vc.first, NAME_WIDTH); // 名前
 
       const int SCORE_WIDTH = 7;
-      std::string score = smart_format(std::to_string(mp.second), SCORE_WIDTH); // スコア
+      string score = smart_format(to_string(vc.second), SCORE_WIDTH); // スコア
 
-      std::string text = "| " + rank + " | " + name + " | " + score + " |";
+      string text = "| " + rank + " | " + name + " | " + score + " |";
 
       // String -> char[]
       char *record = new char[text.length()+1]; // Char配列の定義
