@@ -121,15 +121,13 @@ class MyCursor
     /* *** キー分岐 *** */
     switch(udlr)
     {
-      case UP:     myY--;      break;
-      case DOWN:   myY++;      break;
-      case LEFT:   myX--;      break;
-      case RIGHT:  myX++;      break;
+      case UP:      myY--;      break;
+      case DOWN:    myY++;      break;
+      case LEFT:    myX--;      break;
+      case RIGHT:   myX++;      break;
       // default:   
     }
 
-  
-    
     if (checkTouchWall() || checkTouchBody())
     {
       clear();
@@ -370,10 +368,16 @@ int main()
   while (true)
   {
     new_key = getch(); // キー入力
+    bool check_old_key = false;
+    check_old_key = (old_key == 'j' && new_key == 'k' ||
+                     old_key == 'k' && new_key == 'j' ||
+                     old_key == 'h' && new_key == 'l' ||
+                     old_key == 'l' && new_key == 'h');
+            
     // obj.myobject = new_key; // Debug :: 入力キーをカーソルに
 
     /* *** キー入力なし or 入力キーが同一 *** */
-    if(new_key == ERR || new_key == old_key) {
+    if(new_key == ERR || new_key == old_key || check_old_key) {
 
       obj.mycursor(old_key);
 
