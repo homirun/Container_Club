@@ -8,6 +8,7 @@
 #include <vector>
 using namespace std;
 
+#include "Setting.hpp"
 #include "ApiAccess.cpp"
 #include "unistd.h" // sleepで使う
 
@@ -20,8 +21,8 @@ using namespace std;
 void mvcursor(char num_move, WINDOW *win);
 void addapple();
 
-int terx, tery; // 現在のターミナルの幅と高さ
-int have_apple; // 獲得したリンゴの数
+// int terx, tery; // 現在のターミナルの幅と高さ
+// int have_apple; // 獲得したリンゴの数
 
 // ユーザー名 
 const int TEXT_LENGTH = 40;
@@ -99,9 +100,9 @@ class MyCursor
   /* *** 壁の衝突判定 *** */
   bool checkTouchWall()
   {
-    if (terx <= myX || myX < 0)
+    if (Setting::terX <= myX || myX < 0)
       return true;
-    if (tery <= myY || myY < 0)
+    if (Setting::terY <= myY || myY < 0)
       return true;
     return false;
   }
@@ -134,8 +135,8 @@ class MyCursor
       
       timeout(-1);
       
-      double x = terx / 2 - 30;
-      double y = tery / 2 - 5;
+      double x = Setting::terX / 2 - 30;
+      double y = Setting::terY / 2 - 5;
 
       // GameOverの文字表示
       // --------------------------------------------------------------
@@ -163,7 +164,7 @@ class MyCursor
       int rank_counter = 1;
     
       // スコアの送信
-      api.postScore(user_name, have_apple);
+      api.postScore(user_name, Setting::have_apple);
 
       // ランキングの表示
       
@@ -206,7 +207,7 @@ class MyCursor
       
       // POINT: 食べたりんごの数
       move(RANKING_START_X, RANKING_START_Y+loop_counter);
-      printw("POINT: %d", have_apple);
+      printw("POINT: %d", Setting::have_apple);
 
       getch();
       clear();
@@ -276,8 +277,8 @@ class AppleCursor: public MyCursor
       /* *** 乱数の生成 *** */
       random_device rnd;
       mt19937 mt(rnd());
-      uniform_int_distribution<> randX(0, terx - 1);
-      uniform_int_distribution<> randY(0, tery - 1);
+      uniform_int_distribution<> randX(0, Setting::terX - 1);
+      uniform_int_distribution<> randY(0, Setting::terY - 1);
 
       this -> move(randX(mt), randY(mt));
     }
@@ -286,20 +287,20 @@ class AppleCursor: public MyCursor
 
 int main()
 {
-  /* *** おまじない *** */
-  WINDOW *w = initscr(); // スクリーンの生成
-  getmaxyx(w, tery, terx); // 最大の枠サイズ
-
-  // タイトル
-  // --------------------------------------------------------------
-  timeout(-1); // ブロッキングモード
-  curs_set(1); // カーソルの見え方 : 透過
-  echo();
+//   /* *** おまじない *** */
+//   WINDOW *w = initscr(); // スクリーンの生成
+//   getmaxyx(w, tery, terx); // 最大の枠サイズ
+// 
+//   // タイトル
+//   // --------------------------------------------------------------
+//   timeout(-1); // ブロッキングモード
+//   curs_set(1); // カーソルの見え方 : 透過
+//   echo();
 
   while(true){
 
-    const int RANKING_START_Y = tery / 2 - 5;
-    const int RANKING_START_X = terx / 2 - 40;
+    const int RANKING_START_Y = Setting::terY / 2 - 5;
+    const int RANKING_START_X = Setting::terX / 2 - 40;
     int loop_counter = 0;
 
     mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|-----------------------------------------------------------------------------|");
@@ -357,7 +358,7 @@ int main()
 
   char old_key = ERR; // 前の入力キー
   char new_key = 'j'; // 次の入力キー
-  have_apple = 0; // リンゴの獲得数
+  // Setting::have_apple = 0; // リンゴの獲得数
   
   /* *** インスタンスの作成 *** */
   MyCursor obj(0, 0);
@@ -395,15 +396,15 @@ int main()
     /* *** 衝突時の動作 *** */
     if (obj.isTouching(ap))
     {
-      have_apple++; // 獲得したリンゴの数+1
+      Setting::have_apple++; // 獲得したリンゴの数+1
       ap.pop_apple(); // 新しいリンゴ
       obj.move(obj.myX, obj.myY);
       obj.addBody();
      
       /* *** 得点の表示 *** */
       const int point_status_x = 0; // 描画位置x
-      const int point_status_y = tery-1; // 描画位置y
-      string tmp         = "POINT: " + to_string(have_apple); // String定義
+      const int point_status_y = Setting::terY - 1; // 描画位置y
+      string tmp         = "POINT: " + to_string(Setting::have_apple); // String定義
       char *point_status = new char[tmp.length()+1]; // Char配列の定義
       strcpy(point_status, tmp.c_str()); // String -> Char
       mvaddstr(point_status_y, point_status_x, point_status); // 描画
