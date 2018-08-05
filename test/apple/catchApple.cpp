@@ -296,6 +296,8 @@ int main()
 //   timeout(-1); // ブロッキングモード
 //   curs_set(1); // カーソルの見え方 : 透過
 //   echo();
+  
+  Setting set;
 
   while(true){
 
