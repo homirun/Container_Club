@@ -9,11 +9,12 @@
 using namespace std;
 
 #include "Setting.hpp"
-#include "ApiAccess.cpp"
-#include "unistd.h"
-
 
 Setting::Setting()
+{
+}
+
+void Setting::setStart()
 {
   /* *** おまじない *** */
   WINDOW *w = initscr(); // スクリーンの生成

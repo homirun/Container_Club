@@ -13,10 +13,10 @@ private:
     string BASE_URL = "http://52.243.60.129:5000/api/score";
 public:
     string result;
+    CURLcode res;
 
     int postScore(string usrname, int score){
         CURL *curl;
-        CURLcode res;
         curl = curl_easy_init();
 
         if(curl == NULL){
@@ -36,7 +36,7 @@ public:
     vector<pair<string, int>> getScore(){
         string chunk;
         CURL *curl;
-        CURLcode res;
+//        CURLcode res;
         curl = curl_easy_init();
 
         string getUrl = BASE_URL + "/list";

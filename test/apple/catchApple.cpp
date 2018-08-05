@@ -9,6 +9,7 @@
 using namespace std;
 
 #include "Setting.hpp"
+#include "Title.hpp"
 #include "ApiAccess.cpp"
 #include "unistd.h" // sleepで使う
 
@@ -20,9 +21,6 @@ using namespace std;
 
 void mvcursor(char num_move, WINDOW *win);
 void addapple();
-
-// int terx, tery; // 現在のターミナルの幅と高さ
-// int have_apple; // 獲得したリンゴの数
 
 // ユーザー名 
 const int TEXT_LENGTH = 40;
@@ -285,71 +283,13 @@ class AppleCursor: public MyCursor
 
 };
 
+Setting setting;
+Title title;
+
 int main()
 {
-//   /* *** おまじない *** */
-//   WINDOW *w = initscr(); // スクリーンの生成
-//   getmaxyx(w, tery, terx); // 最大の枠サイズ
-// 
-//   // タイトル
-//   // --------------------------------------------------------------
-//   timeout(-1); // ブロッキングモード
-//   curs_set(1); // カーソルの見え方 : 透過
-//   echo();
-  
-  Setting set;
-
-  while(true){
-
-    const int RANKING_START_Y = Setting::terY / 2 - 5;
-    const int RANKING_START_X = Setting::terX / 2 - 40;
-    int loop_counter = 0;
-
-    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|-----------------------------------------------------------------------------|");
-    loop_counter++;
-    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|                                                                             |");
-    loop_counter++;
-    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|    #####                                   #####                            |");
-    loop_counter++;
-    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|   #     #  #    #    ##    #    #  ###### #     #    ##    #    #  ######   |");
-    loop_counter++;
-    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|   #        ##   #   #  #   #   #   #      #         #  #   ##  ##  #        |");
-    loop_counter++;
-    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|    #####   # #  #  #    #  ####    #####  #  ####  #    #  # ## #  #####    |");
-    loop_counter++;
-    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|         #  #  # #  ######  #  #    #      #     #  ######  #    #  #        |");
-    loop_counter++;
-    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|   #     #  #   ##  #    #  #   #   #      #     #  #    #  #    #  #        |");
-    loop_counter++;
-    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|    #####   #    #  #    #  #    #  ######  #####   #    #  #    #  ######   |");
-    loop_counter++;
-    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|                                                                             |");
-    loop_counter++;
-    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "|-----------------------------------------------------------------------------|");
-    loop_counter+=2;
-    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "+ Please input the user-name and press the [Enter] ");
-    loop_counter+=2;
-    mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "+ UserName: [                                         ]");
-
-    // 入力の受付
-    move(RANKING_START_Y+loop_counter, RANKING_START_X+13);
-    getnstr(user_name, TEXT_LENGTH);
-
-    // 入力値の検証
-    if(strlen(user_name) < 1){ 
-      continue;
-    }
-
-    // 出力 for Debug
-    // mvaddstr(0, 0, user_name);
-    
-    clear();
-    refresh();
-    break;
-
-  }
-  // --------------------------------------------------------------
-
+  setting.setStart();
+  title.popTitle(user_name, TEXT_LENGTH);
 
   // ゲーム中
   // --------------------------------------------------------------
@@ -372,10 +312,10 @@ int main()
   {
     new_key = getch(); // キー入力
     bool check_old_key = false;
-    check_old_key = (old_key == 'j' && new_key == 'k' ||
-                     old_key == 'k' && new_key == 'j' ||
-                     old_key == 'h' && new_key == 'l' ||
-                     old_key == 'l' && new_key == 'h');
+    check_old_key = ((old_key == 'j' && new_key == 'k') ||
+                     (old_key == 'k' && new_key == 'j') ||
+                     (old_key == 'h' && new_key == 'l') ||
+                     (old_key == 'l' && new_key == 'h'));
             
     // obj.myobject = new_key; // Debug :: 入力キーをカーソルに
 
