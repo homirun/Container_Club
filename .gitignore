@@ -1,0 +1,6 @@
+server/docker-compose.yml
+server/.idea/misc.xml
+server/.idea/modules.xml
+server/.idea/server.iml
+server/.idea/workspace.xml
+server/flask/scoreServer/__pycache__/score_server.cpython-36.pyc
