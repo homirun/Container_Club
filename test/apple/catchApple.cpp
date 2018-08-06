@@ -12,6 +12,7 @@
 #include "ApiAccess.cpp"
 #include "Body.hpp"
 #include "MyCursor.hpp"
+#include "AppleCursor.hpp"
 #include "unistd.h" // sleepで使う
 
 using namespace std;
@@ -22,31 +23,6 @@ void addapple();
 // ユーザー名 
 const int TEXT_LENGTH = 40;
 char user_name[TEXT_LENGTH];
-
-
-/* *** リンゴをあつかうクラス *** */
-class AppleCursor: public MyCursor
-{
-  private:
-
-  public:
-    AppleCursor(): MyCursor(0, 0)
-    {
-      myobject = 'A';
-    }
-
-    void pop_apple()
-    {
-      /* *** 乱数の生成 *** */
-      random_device rnd;
-      mt19937 mt(rnd());
-      uniform_int_distribution<> randX(0, Setting::terX - 1);
-      uniform_int_distribution<> randY(0, Setting::terY - 1);
-
-      this -> move(randX(mt), randY(mt));
-    }
-
-};
 
 Setting setting;
 Title title;

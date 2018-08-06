@@ -17,6 +17,7 @@ using namespace std;
 
 MyCursor::MyCursor(double x, double y) : myX(x), myY(y)
 {
+
 }
 
 
@@ -78,6 +79,7 @@ void MyCursor::move2(int udlr)
 
 }
 
+
 /* **** キー入力の分岐 *** */
 bool MyCursor::mycursor(char num_move)
 {
@@ -95,11 +97,13 @@ bool MyCursor::mycursor(char num_move)
   return true;
 }
 
+
 /* *** 衝突の判定 *** */
 bool MyCursor::isTouching(MyCursor &obj)
 {
   return (myX == obj.myX && myY == obj.myY);
 }
+
 
 void MyCursor::addBody()
 {
@@ -167,8 +171,8 @@ void MyCursor::gameOver()
   mvaddstr(RANKING_START_Y+loop_counter, RANKING_START_X, "--------------------------------");
   loop_counter++;
 
-  for(auto vc : result) {
-
+  for(auto vc : result)
+  {
     /* *** 出力する文字列の組み立て *** */
     const int RANK_WIDTH = 5;
     string rank = api.smart_format(to_string(rank_counter), RANK_WIDTH); // 順位

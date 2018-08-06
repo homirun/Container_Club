@@ -12,7 +12,9 @@ using namespace std;
 
 Setting::Setting()
 {
+
 }
+
 
 void Setting::setStart()
 {
@@ -29,6 +31,7 @@ void Setting::setStart()
   echo();
 }
 
+
 void Setting::setGame()
 {
   noecho(); // キー入力を出力せず
@@ -36,6 +39,7 @@ void Setting::setGame()
   timeout(100); // nodelay()とほぼ同義. ERRを返すまでのタイムアウト時間.
   curs_set(0); // カーソルの見え方 : 透過
 }
+
 
 int Setting::terX;
 int Setting::terY;

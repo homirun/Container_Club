@@ -14,7 +14,9 @@ using namespace std;
 
 Body::Body(double x, double y) : pX(x), pY(y)
 {
+
 }
+
 
 void Body::addBody()
 {
@@ -28,6 +30,7 @@ void Body::addBody()
   }
 }
 
+
 void Body::bodyMove(double x, double y)
 {
   mvaddch(pY, pX, ' '); // 文字の移動(old)
@@ -39,6 +42,7 @@ void Body::bodyMove(double x, double y)
   pX = x; pY = y;
 
 }
+
 
 bool Body::isTouch(double x, double y)
 {

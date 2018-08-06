@@ -6,15 +6,17 @@
 #include <random>
 #include <string>
 #include <vector>
-using namespace std;
 
 #include "Setting.hpp"
 #include "Title.hpp"
+
+using namespace std;
 
 Title::Title()
 {
 
 }
+
 
 void Title::popTitle(char *user_name, int TEXT_LENGTH)
 {
