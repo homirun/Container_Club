@@ -1,3 +1,6 @@
+#ifndef APIACESS_HEADER
+#define APIACESS_HEADER
+
 #include <iostream>
 #include <curl/curl.h>
 #include <string>
@@ -96,4 +99,4 @@ public:
 
 };
 
-
+#endif

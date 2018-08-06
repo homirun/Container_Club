@@ -20,6 +20,7 @@ class Setting
 
     Setting();
     void setStart();
+    void setGame();
 };
 
 #endif

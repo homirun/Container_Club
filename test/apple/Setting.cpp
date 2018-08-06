@@ -24,11 +24,17 @@ void Setting::setStart()
   terX = x;
   terY = y;
 
-  // タイトル
-  // --------------------------------------------------------------
   timeout(-1); // ブロッキングモード
   curs_set(1); // カーソルの見え方 : 透過
   echo();
+}
+
+void Setting::setGame()
+{
+  noecho(); // キー入力を出力せず
+  cbreak(); // 1文字打ったら終わり!!
+  timeout(100); // nodelay()とほぼ同義. ERRを返すまでのタイムアウト時間.
+  curs_set(0); // カーソルの見え方 : 透過
 }
 
 int Setting::terX;

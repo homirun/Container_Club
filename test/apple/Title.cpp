@@ -64,3 +64,4 @@ void Title::popTitle(char *user_name, int TEXT_LENGTH)
     break;
   }
 }
+
